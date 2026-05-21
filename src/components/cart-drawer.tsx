@@ -27,6 +27,8 @@ export function CartDrawer({
   );
   const freeShippingThreshold = 299;
   const remaining = Math.max(0, freeShippingThreshold - subtotal);
+  const progress = Math.min(100, (subtotal / freeShippingThreshold) * 100);
+  const hasFreeShipping = remaining === 0;
 
   return (
     <>
@@ -55,16 +57,36 @@ export function CartDrawer({
         </div>
 
         {/* Shipping bar */}
-        <div className="px-4 py-3 bg-cream-light text-center">
-          {remaining > 0 ? (
-            <p className="text-xs text-warm-gray">
-              Spend {remaining.toFixed(0)} zl more to earn free shipping!
-            </p>
-          ) : (
-            <p className="text-xs text-warm-gray">
-              You&apos;ve earned free shipping!
-            </p>
-          )}
+        <div className="px-4 py-3 bg-cream-light">
+          <p className="text-xs text-warm-gray text-center mb-2">
+            {hasFreeShipping ? (
+              <>You&apos;ve earned free shipping!</>
+            ) : (
+              <>
+                Spend{" "}
+                <span className="font-medium text-charcoal">
+                  {remaining.toFixed(0)} zl
+                </span>{" "}
+                more to earn free shipping!
+              </>
+            )}
+          </p>
+          <div
+            className="h-1.5 w-full rounded-full bg-cream-dark overflow-hidden"
+            role="progressbar"
+            aria-valuenow={Math.round(progress)}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label="Progress toward free shipping"
+          >
+            <div
+              className={cn(
+                "h-full rounded-full transition-all duration-500 ease-out",
+                hasFreeShipping ? "bg-emerald-600" : "bg-charcoal"
+              )}
+              style={{ width: `${progress}%` }}
+            />
+          </div>
         </div>
 
         {/* Items */}
